@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empresarial - Indicadores Financeiros</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .card {
+            transition: all 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg text-gray-100 font-sans">
+    <!-- Header -->
+    <header class="container mx-auto px-6 py-8">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <i class="fas fa-chart-line text-3xl text-blue-200"></i>
+                <span class="text-2xl font-bold">FinControl Pro</span>
+            </div>
+            <a href="login.html" class="bg-blue-800 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 shadow-lg">
+                Acessar Dashboard
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto px-6 py-16 text-center">
+        <h1 class="text-5xl font-bold mb-6">Controle Financeiro Empresarial <br> na Nuvem</h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-12">
+            Solução completa para gestão financeira com inteligência artificial e relatórios em tempo real.
+        </p>
+        <div class="flex justify-center gap-6">
+            <a href="login.html" class="bg-white text-blue-800 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition duration-300">
+                Acessar Dashboard
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=5588981126816" class="border-2 border-white text-white hover:bg-white hover:text-blue-800 px-8 py-3 rounded-lg font-semibold transition duration-300">
+                Solicitar Demonstração
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-blue-900 py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16">Por que escolher o FinControl Pro?</h2>
+            
+            <div class="grid md:grid-cols-3 gap-12">
+                <!-- Feature 1 -->
+                <div class="bg-blue-800 p-8 rounded-xl shadow-xl transition transform hover:scale-105">
+                    <div class="text-blue-300 text-4xl mb-6">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Integração Automatizada</h3>
+                    <p class="text-blue-100">Conecte-se automaticamente com seus bancos e sistemas contábeis para um fluxo de dados contínuo.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-blue-800 p-8 rounded-xl shadow-xl transition transform hover:scale-105">
+                    <div class="text-blue-300 text-4xl mb-6">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Análise Preditiva</h3>
+                    <p class="text-blue-100">Nossa IA antecipa tendências e sugere ações para otimizar seu fluxo de caixa.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-blue-800 p-8 rounded-xl shadow-xl transition transform hover:scale-105">
+                    <div class="text-blue-300 text-4xl mb-6">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Segurança de Dados</h3>
+                    <p class="text-blue-100">Criptografia de nível bancário e backups automáticos para proteger suas informações.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-20 bg-gradient-to-b from-blue-900 to-blue-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl font-bold mb-6">Reduza custos e tome decisões mais inteligentes</h2>
+                    <ul class="space-y-5">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-300 mr-3 mt-1"></i>
+                            <span>Economize até 40% do tempo em processos manuais</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-300 mr-3 mt-1"></i>
+                            <span>Relatórios personalizados com visualização intuitiva</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-300 mr-3 mt-1"></i>
+                            <span>Alertas automáticos para pagamentos e recebimentos</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-300 mr-3 mt-1"></i>
+                            <span>Planejamento tributário integrado</span>
+                        </li>
+                    </ul>
+                    <a href="/planos" class="mt-8 inline-block bg-blue-700 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                        Conheça nossos planos
+                    </a>
+                </div>
+                <div class="md:w-1/2">
+                    <img src="assets/img/dashboard-financeiro.png" 
+                         alt="Dashboard Financeiro" 
+                         class="rounded-xl shadow-2xl border-4 border-blue-700">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Planos Section -->
+    <section id="planos" class="py-20 bg-blue-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">Planos e Preços</h2>
+            <p class="text-center text-blue-100 mb-12">Escolha o plano ideal para sua empresa</p>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+               <!-- Plano Starter -->
+                <div class="bg-blue-900 p-8 rounded-xl shadow-xl border border-blue-700 max-w-sm mx-auto">
+                    <!-- Título e descrição -->
+                    <h3 class="text-2xl font-bold text-white mb-1">Plano Starter</h3>
+                    <p class="text-sm text-blue-200 mb-6">Ideal para quem está começando</p>
+
+                    <!-- Preço -->
+                    <div class="text-4xl font-extrabold text-white mb-6">
+                        R$ 59,90
+                        <span class="text-sm font-medium text-blue-300"></span>
+                    </div>
+
+                    <!-- Benefícios -->
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center text-white">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            Interface padrão (sem personalização)
+                        </li>
+                        <li class="flex items-center text-white">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            Relatórios financeiros básicos
+                        </li>
+                        <li class="flex items-center text-white opacity-50">
+                            <i class="fas fa-times text-red-400 mr-2"></i>
+                            Sem suporte por e-mail
+                        </li>
+                        <li class="flex items-center text-white opacity-50">
+                            <i class="fas fa-times text-red-400 mr-2"></i>
+                            Sem aplicativo
+                        </li>
+                        <!-- <li class="flex items-center text-white">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            Acesso pelo site
+                        </li> -->
+                    </ul>
+                    <!-- Botão de ação como link para WhatsApp -->
+                    <a href="https://api.whatsapp.com/send?phone=5588981126816"
+                    target="_blank"
+                    class="mt-8 w-full inline-block text-center bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition duration-300">
+                        Começar agora
+                    </a>
+
+                </div>
+                <!-- Plano Professional -->
+                <div class="bg-blue-900 p-8 rounded-xl shadow-xl border border-blue-600 relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">Mais Popular</span>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Professional</h3>
+                    <p class="text-blue-200 mb-6">Perfeito para empresas em crescimento</p>
+                    <div class="text-4xl font-bold mb-6">
+                        R$ 169,90<span class="text-lg text-blue-300"></span>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-blue-100">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Usuários ilimitados</span>
+                        </li>
+                        <!-- <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Integração completa com bancos</span>
+                        </li> -->
+                        <!-- <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Análise preditiva com IA</span>
+                        </li> -->
+                        <!-- <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Relatórios avançados e KPIs</span>
+                        </li> -->
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Suporte prioritário via WhatsApp</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Aplicativo dedicado</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Dashboard Personalizável</span>
+                        </li>
+                    </ul>
+                    <a href="https://api.whatsapp.com/send?phone=5588981126816"
+                    target="_blank" 
+                    class="mt-8 w-full inline-block bg-white text-center text-blue-800 hover:bg-blue-50 py-3 rounded-lg font-semibold transition duration-300">
+                        Assinar
+                    </a>
+                </div>
+
+                <!-- Plano Enterprise -->
+                <div class="bg-blue-900 p-8 rounded-xl shadow-xl border border-blue-700">
+                    <h3 class="text-2xl font-bold mb-2">Enterprise</h3>
+                    <p class="text-blue-200 mb-6">Para grandes corporações</p>
+                    <div class="text-4xl font-bold mb-6">
+                        R$ 479,90<span class="text-lg text-blue-300">/Mês</span>
+                    </div>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Recursos ilimitados</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>APIs personalizadas</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Consultoria especializada</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>SLA garantido</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-blue-400 mr-2"></i>
+                            <span>Integrações sob demanda</span>
+                        </li>
+                    </ul>
+                    <a href="https://api.whatsapp.com/send?phone=5588981126816"
+                    target="_blank" 
+                    class="mt-8 w-full inline-block text-center bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold transition duration-300">
+                        Falar com consultor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</html>

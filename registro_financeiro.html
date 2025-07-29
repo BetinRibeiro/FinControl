@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empresarial - Indicadores Financeiros</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://kit.fontawesome.com/f6adf96490.js" crossorigin="anonymous"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .card {
+            transition: all 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg text-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8">
+         <!-- Header -->    
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8">
+           <a href="dashboard.html" class="block hover:bg-blue-800 p-4 rounded transition duration-200">
+                <div>
+                    <h1 class="text-3xl font-bold">Dashboard Financeiro</h1>
+                    <p class="text-blue-200">Monitoramento em tempo real dos principais indicadores</p>
+                </div>
+            </a>
+
+            <div class="mt-4 md:mt-0 flex items-center">
+                <button id="openModal" class="px-6 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition">
+                <i class="fas fa-plus mr-2"></i>Novo Registro
+            </button>
+            </div>
+        </header>
+        <!-- Filter Section -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Filtros</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Tipo</label>
+                    <select class="w-full bg-gray-100 text-gray-800 border border-white/20 rounded-md px-3 py-2">
+                        <option value="">Todos</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="saida">Saída</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Status</label>
+                    <select class="w-full bg-gray-100 text-gray-800 border border-white/20 rounded-md px-3 py-2">
+                        <option value="">Todos</option>
+                        <option value="vencida">Vencida</option>
+                        <option value="agendada">Agendada</option>
+                        <option value="liquidada">Liquidada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Vencimento (de)</label>
+                    <input type="date" class="w-full bg-gray-100 text-gray-800 border border-white/20 rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Vencimento (até)</label>
+                    <input type="date" class="w-full bg-gray-100 text-gray-800 border border-white/20 rounded-md px-3 py-2">
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-md mr-2 hover:bg-blue-700 transition">Aplicar</button>
+                <button class="px-4 py-2 bg-white/20 rounded-md hover:bg-white/30 transition">Limpar</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="lg:overflow-x-auto">
+            <table class="w-full bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden hidden md:table">
+                <thead class="border-b border-white/20">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tipo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Categoria</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Valor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Vencimento</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Liquidação</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Pagamento</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10">
+                    <!-- Sample rows - will be populated by JS -->
+                    <tr class="hidden md:table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Entrada
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">Venda a prazo</td>
+                        <td class="px-6 py-4 whitespace-nowrap">R$ 1.200,00</td>
+                        <td class="px-6 py-4 whitespace-nowrap">15/08/2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">10/08/2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">PIX</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Agendada
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-yellow-500 hover:text-yellow-700 mr-3 text-lg edit-button">
+                                <i class="fas fa-pen-alt"></i>
+                            </button>
+                            <button class="text-emerald-500 hover:text-emerald-700 mr-3 text-lg">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700 text-lg">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hidden md:table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                Saída
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">Marketing</td>
+                        <td class="px-6 py-4 whitespace-nowrap">R$ 3.500,00</td>
+                        <td class="px-6 py-4 whitespace-nowrap">20/08/2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Boleto</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                Vencida
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-yellow-500 hover:text-yellow-700 mr-3 text-lg edit-button">
+                                <i class="fas fa-pen-alt"></i>
+                            </button>
+                            <button class="text-emerald-500 hover:text-emerald-700 mr-3 text-lg">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700 text-lg">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hidden md:table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Entrada
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">Venda a vista</td>
+                        <td class="px-6 py-4 whitespace-nowrap">R$ 800,00</td>
+                        <td class="px-6 py-4 whitespace-nowrap">05/08/2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">05/08/2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Cartão de Crédito</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Liquidada
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-yellow-500 hover:text-yellow-700 mr-3 text-lg edit-button">
+                                <i class="fas fa-pen-alt"></i>
+                            </button>
+                            <button class="text-emerald-500 hover:text-emerald-700 mr-3 text-lg">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700 text-lg">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="hidden md:table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                Saída
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">Operacional</td>
+                        <td class="px-6 py-4 whitespace-nowrap">R$ 2.300,00</td>
+                        <td class="px-6 py-4 whitespace-nowrap">01/09/2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Transferência</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                Cancelada
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-yellow-500 hover:text-yellow-700 mr-3 text-lg edit-button">
+                                <i class="fas fa-pen-alt"></i>
+                            </button>
+                            <button class="text-emerald-500 hover:text-emerald-700 mr-3 text-lg">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700 text-lg">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Mobile Version -->
+            <div class="md:hidden space-y-4">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Entrada
+                        </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Agendada
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <div class="text-sm font-medium">Venda a prazo</div>
+                        <div class="text-lg font-bold">R$ 1.200,00</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <div class="text-white/70">Vencimento</div>
+                            <div>15/08/2023</div>
+                        </div>
+                        <div>
+                            <div class="text-white/70">Pagamento</div>
+                            <div>PIX</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-3">
+                        <button class="text-yellow-500 hover:text-yellow-700 text-lg mr-3 edit-button">
+                            <i class="fas fa-pen-alt"></i>
+                        </button>
+                        <button class="text-emerald-500 hover:text-emerald-700 text-lg mr-3">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 text-lg">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Saída
+                        </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                            Vencida
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <div class="text-sm font-medium">Marketing</div>
+                        <div class="text-lg font-bold">R$ 3.500,00</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <div class="text-white/70">Vencimento</div>
+                            <div>20/08/2023</div>
+                        </div>
+                        <div>
+                            <div class="text-white/70">Pagamento</div>
+                            <div>Boleto</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-3">
+                        <button class="text-yellow-500 hover:text-yellow-700 text-lg mr-3 edit-button">
+                            <i class="fas fa-pen-alt"></i>
+                        </button>
+                        <button class="text-emerald-500 hover:text-emerald-700 text-lg mr-3">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 text-lg">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Entrada
+                        </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Liquidada
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <div class="text-sm font-medium">Venda a vista</div>
+                        <div class="text-lg font-bold">R$ 800,00</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <div class="text-white/70">Vencimento</div>
+                            <div>05/08/2023</div>
+                        </div>
+                        <div>
+                            <div class="text-white/70">Pagamento</div>
+                            <div>Cartão de Crédito</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-3">
+                        <button class="text-yellow-500 hover:text-yellow-700 text-lg mr-3 edit-button">
+                            <i class="fas fa-pen-alt"></i>
+                        </button>
+                        <button class="text-emerald-500 hover:text-emerald-700 text-lg mr-3">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 text-lg">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Saída
+                        </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            Cancelada
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <div class="text-sm font-medium">Operacional</div>
+                        <div class="text-lg font-bold">R$ 2.300,00</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <div class="text-white/70">Vencimento</div>
+                            <div>01/09/2023</div>
+                        </div>
+                        <div>
+                            <div class="text-white/70">Pagamento</div>
+                            <div>Transferência</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-3">
+                        <button class="text-yellow-500 hover:text-yellow-700 text-lg mr-3 edit-button">
+                            <i class="fas fa-pen-alt"></i>
+                        </button>
+                        <button class="text-emerald-500 hover:text-emerald-700 text-lg mr-3">
+                            <i class="fas fa-check-circle"></i>
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 text-lg">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal (hidden by default) -->
+        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg w-full max-w-2xl text-gray-800 overflow-hidden">
+                <div class="px-6 py-4 border-b flex justify-between items-center bg-yellow-100">
+                    <h3 class="text-lg font-semibold text-yellow-800">Editar Registro Financeiro</h3>
+                    <button id="closeEditModal" class="text-yellow-800 hover:text-yellow-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto flex-grow">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Tipo</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="entrada">Entrada</option>
+                                <option value="saida">Saída</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Categoria</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="venda_a_prazo">Venda a prazo</option>
+                                <option value="venda_a_vista">Venda a vista</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Valor</label>
+                            <input type="text" class="w-full border rounded-md px-3 py-2" value="R$ 1.200,00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="vencida">Vencida</option>
+                                <option value="agendada" selected>Agendada</option>
+                                <option value="liquidada">Liquidada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Vencimento</label>
+                            <input type="date" class="w-full border rounded-md px-3 py-2" value="2023-08-15">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Liquidação</label>
+                            <input type="date" class="w-full border rounded-md px-3 py-2" value="2023-08-10">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Observações</label>
+                            <textarea class="w-full border rounded-md px-3 py-2" rows="3">Cliente solicitou alteração na data</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelEditModal" class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100">Cancelar</button>
+                    <button class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Modal (hidden by default) -->
+        <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto px-4">
+            <div class="bg-white rounded-lg w-full max-w-2xl text-gray-800 flex flex-col shadow-xl" style="max-height: 90vh;">
+                <div class="px-6 py-4 border-b flex justify-between items-center">
+                    <h3 class="text-lg font-semibold">Adicionar Registro Financeiro</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto flex-grow" style="margin-bottom: 4rem;">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Tipo</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="entrada">Entrada</option>
+                                <option value="saida">Saída</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Categoria</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="venda_a_prazo">Venda a prazo</option>
+                                <option value="venda_a_vista">Venda a vista</option>
+                                <option value="outro_entrada">Outra entrada</option>
+                                <option value="pessoal">Pessoal</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="operacional">Operacional</option>
+                                <option value="imposto">Imposto</option>
+                                <option value="outro_saida">Outra saída</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Valor</label>
+                            <input type="text" class="w-full border rounded-md px-3 py-2" placeholder="R$ 0,00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Forma de Pagamento</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="cartao_credito">Cartão de Crédito</option>
+                                <option value="cartao_debito">Cartão de Débito</option>
+                                <option value="boleto">Boleto</option>
+                                <option value="pix">PIX</option>
+                                <option value="transferencia_bancaria">Transferência Bancária</option>
+                                <option value="cheque">Cheque</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Descrição</label>
+                            <input type="text" class="w-full border rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Data de Vencimento</label>
+                            <input type="date" class="w-full border rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Data de Liquidação</label>
+                            <input type="date" class="w-full border rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Status</label>
+                            <select class="w-full border rounded-md px-3 py-2">
+                                <option value="vencida">Vencida</option>
+                                <option value="agendada" selected>Agendada</option>
+                                <option value="liquidada">Liquidada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-1">Observações</label>
+                            <textarea class="w-full border rounded-md px-3 py-2" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3 bg-white fixed bottom-0 w-full max-w-2xl" style="border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem;">
+                    <button id="cancelModal" class="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100">Cancelar</button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Salvar</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Edit Modal control
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('editModal').classList.remove('hidden');
+                });
+            });
+
+            document.getElementById('closeEditModal').addEventListener('click', () => {
+                document.getElementById('editModal').classList.add('hidden');
+            });
+
+            document.getElementById('cancelEditModal').addEventListener('click', () => {
+                document.getElementById('editModal').classList.add('hidden');
+            });
+
+            // Add New Modal control
+            document.getElementById('openModal').addEventListener('click', () => {
+                document.getElementById('modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('modal').classList.add('hidden');
+                document.body.style.overflow = '';
+            });
+
+            document.getElementById('cancelModal').addEventListener('click', () => {
+                document.getElementById('modal').classList.add('hidden');
+                document.body.style.overflow = '';
+            });
+        </script>
+    </div>
+</body>
+</html>

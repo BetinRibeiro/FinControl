@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empresarial - Indicadores Financeiros</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .card {
+            transition: all 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg text-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8">
+           <a href="registro_financeiro.html" class="block hover:bg-blue-800 p-4 rounded transition duration-200">
+                <div>
+                    <h1 class="text-3xl font-bold">Dashboard Financeiro</h1>
+                    <p class="text-blue-200">Monitoramento em tempo real dos principais indicadores</p>
+                </div>
+            </a>
+
+            <div class="mt-4 md:mt-0 flex items-center">
+                <div class="relative">
+                    <select class="bg-blue-900 text-white rounded-lg pl-3 pr-8 py-2 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Trimestral</option>
+                        <option>Semestral</option>
+                        <option>Anual</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="ml-4 px-4 py-2 bg-blue-800 rounded-lg">
+                    <span class="text-blue-200">Atualizado: </span>
+                    <span id="current-date" class="font-medium"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Indicator Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Faturamento Bruto -->
+            <div class="card bg-blue-900 rounded-xl p-6 shadow-lg card-hover fade-in cursor-pointer" 
+                 style="animation-delay: 0.1s;"
+                 data-metric="faturamento"
+                 data-title="Faturamento Bruto"
+                 data-content="Total de vendas antes de dedução de custos e impostos. Calculado somando todas receitas da empresa no período selecionado.">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">Faturamento Bruto</p>
+                        <h2 class="text-3xl font-bold mt-2">R$ 1.245.689</h2>
+                    </div>
+                    <div class="bg-blue-800 p-3 rounded-lg">
+                        <i class="fas fa-chart-line text-xl text-green-400"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-green-400 flex items-center">
+                        <i class="fas fa-arrow-up mr-1"></i> 12.5%
+                    </span>
+                    <span class="text-blue-300 ml-2">vs último trimestre</span>
+                </div>
+            </div>
+
+            <!-- Lucro Líquido -->
+            <div class="card bg-blue-900 rounded-xl p-6 shadow-lg card-hover fade-in cursor-pointer" 
+                 style="animation-delay: 0.2s;"
+                 data-metric="lucro"
+                 data-title="Lucro Líquido" 
+                 data-content="Resultado final após dedução de todos custos e impostos. Calculado como: Faturamento Bruto - (Custos + Despesas + Impostos).">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">Lucro Líquido</p>
+                        <h2 class="text-3xl font-bold mt-2">R$ 345.782</h2>
+                    </div>
+                    <div class="bg-blue-800 p-3 rounded-lg">
+                        <i class="fas fa-hand-holding-usd text-xl text-green-400"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-green-400 flex items-center">
+                        <i class="fas fa-arrow-up mr-1"></i> 8.3%
+                    </span>
+                    <span class="text-blue-300 ml-2">vs último trimestre</span>
+                </div>
+            </div>
+
+            <!-- Despesas Totais -->
+            <div class="card bg-blue-900 rounded-xl p-6 shadow-lg card-hover fade-in cursor-pointer" 
+                 style="animation-delay: 0.3s;"
+                 data-metric="despesas"
+                 data-title="Despesas Totais"
+                 data-content="Soma de todos gastos operacionais e administrativos. Inclui salários, conta de luz, manutenções, marketing e outras despesas fixas e variáveis.">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">Despesas Totais</p>
+                        <h2 class="text-3xl font-bold mt-2">R$ 899.907</h2>
+                    </div>
+                    <div class="bg-blue-800 p-3 rounded-lg">
+                        <i class="fas fa-receipt text-xl text-red-400"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-red-400 flex items-center">
+                        <i class="fas fa-arrow-up mr-1"></i> 5.7%
+                    </span>
+                    <span class="text-blue-300 ml-2">vs último trimestre</span>
+                </div>
+            </div>
+
+            <!-- Margem de Lucro -->
+            <div class="card bg-blue-900 rounded-xl p-6 shadow-lg card-hover fade-in cursor-pointer" 
+                 style="animation-delay: 0.4s;"
+                 data-metric="margem"
+                 data-title="Margem de Lucro"
+                 data-content="Percentual do faturamento que se transforma em lucro. Calculado como: (Lucro Líquido ÷ Faturamento Bruto) × 100.">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">Margem de Lucro</p>
+                        <h2 class="text-3xl font-bold mt-2">27.8%</h2>
+                    </div>
+                    <div class="bg-blue-800 p-3 rounded-lg">
+                        <i class="fas fa-percentage text-xl text-purple-400"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-green-400 flex items-center">
+                        <i class="fas fa-arrow-up mr-1"></i> 2.1%
+                    </span>
+                    <span class="text-blue-300 ml-2">vs último trimestre</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Faturamento Histórico -->
+            <div class="bg-blue-900 rounded-xl p-6 shadow-lg fade-in" style="animation-delay: 0.5s;">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">Histórico de Faturamento Bruto</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 bg-blue-800 rounded-lg text-sm hover:bg-blue-700">12M</button>
+                        <button class="px-3 py-1 bg-blue-800 rounded-lg text-sm hover:bg-blue-700">6M</button>
+                        <button class="px-3 py-1 bg-blue-700 rounded-lg text-sm">3M</button>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Despesas por Categoria -->
+            <div class="bg-blue-900 rounded-xl p-6 shadow-lg fade-in" style="animation-delay: 0.6s;">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold">Despesas por Categoria</h3>
+                    <div class="relative">
+                        <select class="bg-blue-800 text-white rounded-lg pl-3 pr-8 py-1 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>Últimos 3 meses</option>
+                            <option>Últimos 6 meses</option>
+                            <option>Últimos 12 meses</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-300">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-64">
+                    <canvas id="expensesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- ROI (Retorno sobre Investimento) -->
+            <div class="bg-blue-900 rounded-xl p-6 shadow-lg fade-in cursor-pointer" 
+                 style="animation-delay: 0.7s;"
+                 data-metric="roi"
+                 data-title="ROI (Retorno sobre Investimento)"
+                 data-content="Mede a eficiência de um investimento. Calculado como: ((Ganho com o Investimento - Custo do Investimento) / Custo do Investimento) × 100. Mostra quanto de retorno a empresa obteve para cada real investido.">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">ROI (12 meses)</p>
+                        <h2 class="text-2xl font-bold mt-2">24.5%</h2>
+                    </div>
+                    <div class="bg-blue-800 p-2 rounded-lg">
+                        <i class="fas fa-chart-pie text-lg text-yellow-400"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 w-full bg-blue-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-yellow-400 rounded-full" style="width: 65%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-blue-300 mt-1">
+                        <span>0%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custo por Cliente -->
+            <div class="bg-blue-900 rounded-xl p-6 shadow-lg fade-in cursor-pointer" 
+                 style="animation-delay: 0.8s;"
+                 data-metric="custo-cliente"
+                 data-title="Custo por Cliente"
+                 data-content="Custo médio para aquisição e manutenção de cada cliente. Calculado como: (Custos de Marketing + Vendas) / Número de Clientes Ativos. Indica o investimento necessário para conquistar e manter cada cliente.">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">Custo por Cliente</p>
+                        <h2 class="text-2xl font-bold mt-2">R$ 342</h2>
+                    </div>
+                    <div class="bg-blue-800 p-2 rounded-lg">
+                        <i class="fas fa-users text-lg text-blue-400"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-red-400 flex items-center">
+                        <i class="fas fa-arrow-up mr-1"></i> 4.2%
+                    </span>
+                    <span class="text-blue-300 ml-2">vs anterior</span>
+                </div>
+            </div>
+
+            <!-- NPS (Net Promoter Score) -->
+            <div class="bg-blue-900 rounded-xl p-6 shadow-lg fade-in cursor-pointer" 
+                 style="animation-delay: 0.9s;"
+                 data-metric="nps"
+                 data-title="NPS (Net Promoter Score)"
+                 data-content="Índice de satisfação do cliente. Calculado com base na pergunta 'Qual a probabilidade de indicar nossa empresa?'. Pontuação varia de -100 a 100. Considerado Excelente acima de 70. NPS = % Promotores - % Detratores.">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-300">NPS (Satisfação)</p>
+                        <h2 class="text-2xl font-bold mt-2">72</h2>
+                    </div>
+                    <div class="bg-blue-800 p-2 rounded-lg">
+                        <i class="fas fa-smile text-lg text-green-400"></i>
+                    </div>
+                </div>
+                <div class="mt-2 flex items-center">
+                    <span class="text-green-400 flex items-center">
+                        <i class="fas fa-arrow-up mr-1"></i> 8 pontos
+                    </span>
+                    <span class="text-blue-300 ml-2">no último mês</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metric Modals -->
+    <div id="metricModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-blue-900 rounded-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-xl font-bold"></h3>
+                <button id="closeModal" class="text-blue-300 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modalContent" class="text-blue-200">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const now = new Date();
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        document.getElementById('current-date').textContent = now.toLocaleDateString('pt-BR', options);
+
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Faturamento Bruto (R$)',
+                    data: [285000, 385000, 310000, 420500, 390000, 450000, 480000],
+                    backgroundColor: '#10B981',
+                    borderRadius: 4,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1E40AF',
+                        titleFont: {
+                            weight: 'bold'
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.raw.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(147, 197, 253, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + (value / 1000) + 'k';
+                            },
+                            color: '#93C5FD'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#93C5FD'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Expenses Chart
+        const expensesCtx = document.getElementById('expensesChart').getContext('2d');
+        const expensesChart = new Chart(expensesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pessoal', 'Marketing', 'Operações', 'Impostos', 'Outros'],
+                datasets: [{
+                    data: [45, 15, 20, 10, 10],
+                    backgroundColor: [
+                        '#EF4444',
+                        '#F59E0B',
+                        '#3B82F6',
+                        '#8B5CF6',
+                        '#6B7280'
+                    ],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 20,
+                            color: '#93C5FD',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1E40AF',
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${percentage}% (R$ ${(value * 10000).toLocaleString('pt-BR')})`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('metricModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+
+        // Add click handlers to all metric cards
+        document.querySelectorAll('[data-metric]').forEach(card => {
+            card.addEventListener('click', () => {
+                modalTitle.textContent = card.dataset.title;
+                modalContent.textContent = card.dataset.content;
+                modal.classList.remove('hidden');
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Close when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
